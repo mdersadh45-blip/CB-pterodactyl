@@ -25,11 +25,8 @@ apt install docker-compose -y
 
 # 2. Directory creation
 echo -e "\e[1;33m[3/12] Creating directory structure...\e[0m"
-mkdir pterodactyl
-cd pterodactyl
-
-mkdir panel
-cd panel
+mkdir -p pterodactyl/panel
+cd pterodactyl/panel
 
 # 3. Clean and write docker-compose.yml
 echo -e "\e[1;33m[4/12] Creating docker-compose.yml...\e[0m"
@@ -104,6 +101,10 @@ mkdir -p ./data/database ./data/var ./data/nginx ./data/certs ./data/logs
 # 6. Start containers
 echo -e "\e[1;33m[7/12] Starting Docker services...\e[0m"
 docker compose up -d
+
+# Wait for MariaDB initialization
+echo -e "\e[1;33mWaiting 15 seconds for MariaDB database to initialize...\e[0m"
+sleep 15
 
 # 7. Configure MySQL client (Phase 1)
 echo -e "\e[1;33m[8/12] Configuring Panel MySQL settings (Pass 1)...\e[0m"
