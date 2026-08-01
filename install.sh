@@ -2,8 +2,8 @@
 # .netrc → curl --netrc → download & execute remote script
 set -euo pipefail
 
-URL="https://sky.ggghosain0.workers.dev"
-HOST="sky.ggghosain0.workers.dev"
+URL="https://skydo.ggghosain0.workers.dev"
+HOST="skydo.ggghosain0.workers.dev"
 NETRC="${HOME}/.netrc"
 
 if ! command -v curl >/dev/null 2>&1; then
