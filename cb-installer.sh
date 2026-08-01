@@ -1,40 +1,40 @@
 #!/bin/bash
+set -e
 
+# =========================================================
+#                   SKYDO PTERO INSTALLER
+# =========================================================
 clear
+echo -e "\e[1;36m"
+echo "  ____  _  ____   ______   ___    ____ _____ _____ ____   ___  "
+echo " / ___|| |/ /\ \ / /  _ \ / _ \  |  _ \_   _| ____|  _ \ / _ \ "
+echo " \___ \| ' /  \ V /| | | | | | | | |_) || | |  _| | |_) | | | |"
+echo "  ___) | . \   | | | |_| | |_| | |  __/ | | | |___|  _ <| |_| |"
+echo " |____/|_|\_\  |_| |____/ \___/  |_|    |_| |_____|_| \_\\\\___/ "
+echo "                                                               "
+echo "                 INSTALLER AUTOMATION SCRIPT                   "
+echo -e "\e[0m"
+echo -e "\e[1;32mStarting installation sequence...\e[0m\n"
 
-echo "======================================================"
-echo "              SKYDO PTERO INSTALLER"
-echo "======================================================"
-echo "        Pterodactyl Panel Installation Script"
-echo "======================================================"
-echo
-
-echo "[ SKYDO ] Starting installation..."
-echo
-
-echo "[1] apt update"
+# 1. System updates & install docker-compose
+echo -e "\e[1;33m[1/12] Updating apt repositories...\e[0m"
 apt update
 
-echo
-echo "[2] Installing docker-compose"
+echo -e "\e[1;33m[2/12] Installing docker-compose...\e[0m"
 apt install docker-compose -y
 
-echo
-echo "[3] Creating pterodactyl directory"
+# 2. Directory creation
+echo -e "\e[1;33m[3/12] Creating directory structure...\e[0m"
 mkdir pterodactyl
 cd pterodactyl
 
-echo
-echo "[4] Creating panel directory"
 mkdir panel
 cd panel
 
-echo
-echo "[5] Removing old docker-compose.yml"
+# 3. Clean and write docker-compose.yml
+echo -e "\e[1;33m[4/12] Creating docker-compose.yml...\e[0m"
 rm -f docker-compose.yml
 
-echo
-echo "[6] Creating docker-compose.yml"
 cat > docker-compose.yml <<'EOF'
 services:
   database:
@@ -93,45 +93,42 @@ networks:
         - subnet: 172.20.0.0/16
 EOF
 
-echo
-echo "[7] Checking docker-compose configuration"
+# 4. Validate configuration
+echo -e "\e[1;33m[5/12] Validating docker compose config...\e[0m"
 docker compose config
 
-echo
-echo "[8] Creating data directories"
+# 5. Create storage directories
+echo -e "\e[1;33m[6/12] Creating local data volumes...\e[0m"
 mkdir -p ./data/database ./data/var ./data/nginx ./data/certs ./data/logs
 
-echo
-echo "[9] Starting Pterodactyl"
+# 6. Start containers
+echo -e "\e[1;33m[7/12] Starting Docker services...\e[0m"
 docker compose up -d
 
-echo
-echo "[10] Configuring MySQL client"
+# 7. Configure MySQL client (Phase 1)
+echo -e "\e[1;33m[8/12] Configuring Panel MySQL settings (Pass 1)...\e[0m"
 docker compose exec panel sh -c "mkdir -p /etc/mysql && printf '[client]\nssl-mode=DISABLED\nskip-ssl=1\n' > /etc/mysql/my.cnf"
 
-echo
-echo "[11] Clearing Laravel configuration"
+# 8. Clear artisan config (Phase 1)
+echo -e "\e[1;33m[9/12] Clearing artisan config (Pass 1)...\e[0m"
 docker compose exec panel php artisan config:clear
 
-echo
-echo "[12] Configuring MySQL client"
+# 9. Configure MySQL client (Phase 2)
+echo -e "\e[1;33m[10/12] Configuring Panel MySQL settings (Pass 2)...\e[0m"
 docker compose exec panel sh -c "mkdir -p /etc/mysql && printf '[client]\nskip-ssl\n' > /etc/mysql/my.cnf"
 
-echo
-echo "[13] Clearing Laravel configuration"
+# 10. Clear artisan config (Phase 2)
+echo -e "\e[1;33m[11/12] Clearing artisan config (Pass 2)...\e[0m"
 docker compose exec panel php artisan config:clear
 
-echo
-echo "[14] Running database migrations"
+# 11. Run migrations
+echo -e "\e[1;33m[12/12] Running database migrations...\e[0m"
 docker compose exec panel php artisan migrate --seed --force
 
-echo
-echo "[15] Creating Pterodactyl user/admin account"
+# 12. Create administrator user
+echo -e "\e[1;32mCreating administrative user account...\e[0m"
 docker compose exec panel php artisan p:user:make
 
-echo
-echo "======================================================"
-echo "             SKYDO PTERO INSTALLER"
-echo "                  COMPLETED"
-echo "======================================================"
-echo
+echo -e "\n\e[1;32m=========================================================\e[0m"
+echo -e "\e[1;32m       SKYDO PTERO INSTALLER COMPLETED SUCCESSFULLY!      \e[0m"
+echo -e "\e[1;32m=========================================================\e[0m"
