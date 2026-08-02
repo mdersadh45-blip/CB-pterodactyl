@@ -1,91 +1,62 @@
-WINGS3 INSTALLER
-
-Save the following as "wings3-installer.sh":
-
 #!/bin/bash
 
-set -e
-
+clear
 echo "======================================"
-echo "        WINGS3 INSTALLER"
+echo "       WINGS 3 INSTALLER"
 echo "======================================"
+echo
+echo "WINGS INSTALLATION"
+echo
 
-echo "[2/9] Installing Docker Compose..."
-apt update
-apt install docker-compose -y
+read -p "Start WINGS installation? (yes/no): " confirm
 
-echo "[3/9] Creating Pterodactyl Wings directory..."
-mkdir -p pterodactyl/wings
-cd pterodactyl/wings || exit 1
+if [[ "$confirm" != "yes" ]]; then
+    echo "Installation cancelled."
+    exit 0
+fi
 
-echo "[4/9] Creating docker-compose.yml..."
+echo
+echo "[1/7] Installing Wings..."
+bash <(curl -s https://raw.githubusercontent.com/unnamed-boy07/pterodactyl/refs/heads/main/pt-wings)
 
-cat > docker-compose.yml <<'EOF'
-version: '3.8'
+echo
+echo "[2/7] Entering pterodactyl directory..."
+cd pterodactyl || {
+    echo "ERROR: pterodactyl directory not found."
+    exit 1
+}
 
-services:
-  wings:
-    image: ghcr.io/pterodactyl/wings:v1.6.1
-    restart: always
-    networks:
-      - wings0
-    ports:
-      - "8080:8080"
-      - "2022:2022"
-      - "443:443"
-    tty: true
-    environment:
-      TZ: "UTC"
-      WINGS_UID: 988
-      WINGS_GID: 988
-      WINGS_USERNAME: pterodactyl
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /var/lib/docker/containers/:/var/lib/docker/containers/
-      - /etc/pterodactyl/:/etc/pterodactyl/
-      - /var/lib/pterodactyl/:/var/lib/pterodactyl/
-      - /var/log/pterodactyl/:/var/log/pterodactyl/
-      - /tmp/pterodactyl/:/tmp/pterodactyl/
-      - /etc/ssl/certs:/etc/ssl/certs:ro
+echo
+echo "[3/7] Switching to root..."
+sudo su
 
-networks:
-  wings0:
-    name: wings0
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.21.0.0/16
-    driver_opts:
-      com.docker.network.bridge.name: wings0
-EOF
-
-echo "[5/9] Starting Wings..."
-docker compose up -d
-
-echo "[6/9] Starting Serveo tunnel..."
-ssh -R 80:localhost:443 serveo.net
-
-echo "[7/9] Opening Pterodactyl configuration..."
-cd /pterodactyl
-
+echo
+echo "[4/7] Opening Wings configuration..."
 nano /etc/pterodactyl/config.yml
 
-echo "[8/9] Entering Wings directory..."
-cd wings
+echo
+echo "======================================"
+echo "CONFIGURATION STEP"
+echo "======================================"
+echo "Paste the config.yml configuration"
+echo "copied from your Pterodactyl Panel."
+echo
+read -p "Press ENTER after you have saved the config..."
 
-echo "[9/9] Recreating Wings container..."
+echo
+echo "[6/7] Entering wings directory..."
+cd wings || {
+    echo "ERROR: wings directory not found."
+    exit 1
+}
+
+echo
+echo "[7/7] Starting Wings..."
 docker compose up -d --force-recreate
 
+echo
 echo "======================================"
-echo "       WINGS3 INSTALLATION DONE"
+echo "       WINGS INSTALLATION DONE"
 echo "======================================"
-
-Make it executable:
-
-chmod +x wings3-installer.sh
-
-Run it:
-
-sudo bash wings3-installer.sh
-
-Important: Your "docker run ... --rm" command is interactive and exits when you leave the VM, so the commands after it will not execute inside that VM. Also, "ssh -R ... serveo.net" is interactive and can prevent the following commands from running until the SSH session ends. For a truly automatic first-to-last installer, those two parts need to be changed.
+echo
+echo "Wings should now be running."
