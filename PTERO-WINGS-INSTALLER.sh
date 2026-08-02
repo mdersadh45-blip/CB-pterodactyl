@@ -96,7 +96,7 @@ run_command "STEP 4.3 - Create SSL certificate" \
 'openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj "/C=NA/ST=NA/L=NA/O=NA/CN=Generic SSL Certificate" -keyout privkey.pem -out fullchain.pem'
 
 echo
-echo "📌 Code credit: How2MCoffic"
+echo "📌 Code credit: ME"
 
 echo
 echo "### 5. Edit Wings Configuration"
@@ -175,11 +175,6 @@ echo "Your Pterodactyl Wings should now be running successfully"
 echo "with SSL enabled!"
 echo
 echo "============================================================"
-echo "📝 Credits"
-echo "============================================================"
-echo "- Guide: ITZ_YTANSH"
-echo "- SSL Code Snippet: How2MCoffic"
-echo "- Codes: HopingBoyz"
 echo
 echo "============================================================"
 echo "             PTERO WINGS INSTALLER DONE"
