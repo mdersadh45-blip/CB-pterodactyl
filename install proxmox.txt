@@ -1,0 +1,37 @@
+# System update aur tools install karein
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y qemu-system-x86 qemu-utils wget novnc websockify
+
+# Proxmox VE 8.2 ISO download karein (Ya latest version ka link use karein)
+wget https://enterprise.proxmox.com/iso/proxmox-ve_9.2-1.iso
+
+# Make Disk 
+qemu-img create -f qcow2 proxmox.qcow2 60G
+
+# Make Web Acess
+websockify --web=/usr/share/novnc/ 6080 localhost:5900 &
+
+# Start Proxmox 
+qemu-system-x86_64 \
+  -machine pc \
+  -cpu qemu64 \
+  -m 8192 \
+  -smp 4 \
+  -accel tcg \
+  -drive file=proxmox.qcow2,format=qcow2 \
+  -cdrom proxmox.iso \
+  -boot d \
+  -net nic -net user,hostfwd=tcp::2022-:22,hostfwd=tcp::8006-:8006 \
+  -vnc :0
+
+# again start proxmox
+qemu-system-x86_64 \
+  -machine pc \
+  -cpu qemu64 \
+  -m 4096 \
+  -smp 4 \
+  -accel tcg \
+  -drive file=proxmox.qcow2,format=qcow2 \
+  -boot c \
+  -net nic -net user,hostfwd=tcp::2022-:22,hostfwd=tcp::8006-:8006 \
+  -vnc :0
