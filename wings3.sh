@@ -10,14 +10,6 @@ echo "======================================"
 echo "        WINGS3 INSTALLER"
 echo "======================================"
 
-echo "[1/9] Starting Debian VM..."
-docker run -it --rm \
-  -v "$PWD/vmdata:/vmdata" \
-  -e RAM=7900 \
-  -e CPU=3 \
-  -e DISK_SIZE=100G \
-  nothingtheking/debian-vm
-
 echo "[2/9] Installing Docker Compose..."
 apt update
 apt install docker-compose -y
