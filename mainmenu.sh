@@ -44,7 +44,7 @@ case $main_choice in
                 ;;
             3)
                 echo "--> Running PufferPanel Installer..."
-                bash <(curl -s https://raw.githubusercontent.com/mdersadh45-blip/CB-pterodactyl/main/PUFFER/puffer-panel.sh)
+                bash <(curl -fsSL https://raw.githubusercontent.com/JishnuTheGamer/Puffer-panel-installer/main/Installer)
                 ;;
             4)
                 echo "--> Running Teryx Panel Installer..."
