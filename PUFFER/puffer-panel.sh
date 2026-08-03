@@ -35,5 +35,3 @@ echo ""
 echo "========================================"
 echo "     PUFFER INSTALLATION COMPLETED"
 echo "========================================"
-
-'ROOT'
