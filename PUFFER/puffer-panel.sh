@@ -21,6 +21,7 @@ apt install -y systemd
 
 echo "[5/7] Installing PufferPanel..."
 bash <(curl -s https://raw.githubusercontent.com/RasINGamerZ/Puffer-panel-installer/refs/heads/main/puffer-panel)
+sudo apt autoremove
 
 echo "[6/7] Creating PufferPanel user..."
 pufferpanel user add
