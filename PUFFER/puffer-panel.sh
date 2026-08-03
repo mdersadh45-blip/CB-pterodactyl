@@ -8,7 +8,7 @@ echo "========================================"
 echo ""
 
 echo "[1/7] Switching to root..."
-sudo su <<'ROOT'
+sudo su
 
 echo "[2/7] Updating and upgrading packages..."
 apt update && apt upgrade -y
