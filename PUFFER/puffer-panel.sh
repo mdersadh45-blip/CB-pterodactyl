@@ -7,4 +7,5 @@ curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/scr
 sudo apt update
 sudo apt-get install pufferpanel
 sudo pufferpanel user add
+apt install systemctl
 sudo systemctl enable --now pufferpanel
